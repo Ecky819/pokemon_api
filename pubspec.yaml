@@ -10,8 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.5.0
+  shared_preferences: ^2.2.2
   flutter_native_splash: ^2.4.6
-  flutter_launcher_icons: ^0.14.4
+  flutter_launcher_icons: ^0.13.1
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
@@ -35,7 +36,7 @@ flutter_native_splash:
   ios: true
   web: true
 
-# App Icon Konfiguration (KORRIGIERTE EINRÜCKUNG!)
+# App Icon Konfiguration
 flutter_launcher_icons:
   android: true
   ios: true
