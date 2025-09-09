@@ -10,11 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.5.0
-
-  flutter_native_splash: ^2.2.16
-  flutter_launcher_icons: "^0.13.1"
-
-  cupertino_icons: ^1.0.6
+  flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.4
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -24,16 +22,23 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  # Assets müssen deklariert werden
+  assets:
+    - assets/pokeball.png
+    - assets/
+
+# Native Splash Screen Konfiguration
 flutter_native_splash:
-  color: "#FF0000" # Hintergrundfarbe Rot (Pokémon-Stil)
-  image: assets/pokeball.png # dein Pokéball-Icon als Splash-Bild
+  color: "#FF0000"
+  image: assets/pokeball.png
   android: true
   ios: true
   web: true
 
+# App Icon Konfiguration (KORRIGIERTE EINRÜCKUNG!)
 flutter_launcher_icons:
-android: true
-ios: true
-image_path: "assets/pokeball.png"
-adaptive_icon_background: "#FF0000"
-adaptive_icon_foreground: "assets/pokeball.png"
+  android: true
+  ios: true
+  image_path: "assets/pokeball.png"
+  adaptive_icon_background: "#FF0000"
+  adaptive_icon_foreground: "assets/pokeball.png"
