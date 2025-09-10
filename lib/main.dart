@@ -45,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Screen nach Index auswählen
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -71,6 +72,7 @@ class _MainScreenState extends State<MainScreen> {
           type: BottomNavigationBarType.fixed,
           elevation: 0, // Wir verwenden eigene Schatten
           items: [
+            // Home Button
             BottomNavigationBarItem(
               icon: Container(
                 padding: const EdgeInsets.symmetric(vertical: 4),
@@ -81,6 +83,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               label: 'Pokédex',
             ),
+            // Favoriten Button
             BottomNavigationBarItem(
               icon: Container(
                 padding: const EdgeInsets.symmetric(vertical: 4),
