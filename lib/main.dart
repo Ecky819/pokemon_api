@@ -28,6 +28,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  //Navigation über Page-Index
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
@@ -55,6 +56,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ],
         ),
+        //Bottom-Navigation Bar
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,

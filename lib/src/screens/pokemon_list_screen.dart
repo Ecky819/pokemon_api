@@ -21,10 +21,12 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
   }
 
   Future<void> fetchPokemons() async {
+    // Die Daten von der Pokemon API abrufen
     final response = await http.get(
-      Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=151'),
+      Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'),
     );
 
+    // Überprüfen, ob die Anfrage erfolgreich war
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
@@ -32,6 +34,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
         isLoading = false;
       });
     } else {
+      // Wenn die Anfrage nicht erfolgreich war, eine Fehlermeldung ausgeben
       throw Exception('Fehler beim Laden der Pokémon-Daten');
     }
   }
@@ -101,6 +104,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // Wird angezeigt, wenn die Daten noch geladen werden
                           CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Colors.red[400]!,
@@ -135,6 +139,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                         final imageUrl =
                             'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$pokemonId.png';
 
+                        // Hier wird das Bild des Pokémon geladen und ein Fallback verwendet, falls es fehlschlägt
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -147,6 +152,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                               ),
                             );
                           },
+                          // Hier wird die Card mit der ID und dem Namen des Pokémon angezeigt
                           child: Card(
                             elevation: 8,
                             shadowColor: Colors.black26,

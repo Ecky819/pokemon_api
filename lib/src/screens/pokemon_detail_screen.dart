@@ -53,16 +53,23 @@ class _PokemonDetailScreenState extends State<PokemonDetailScreen> {
     await _checkFavoriteStatus();
   }
 
+  // Hier werden die Typen-Details abgerufen und in einer Liste gespeichert.
+  List<Map<String, dynamic>> getPokemonTypes() {
+    return pokemonData!['types'];
+  }
+
   Future<void> fetchPokemonDetails() async {
     final response = await http.get(
       Uri.parse('https://pokeapi.co/api/v2/pokemon/${widget.id}'),
     );
 
+    // Überprüfen, ob das Laden erfolgreich war
     if (response.statusCode == 200) {
       setState(() {
         pokemonData = json.decode(response.body);
         isLoading = false;
       });
+      // Error-HAndling, falls das LAden nicht erfolgreich war
     } else {
       throw Exception('Fehler beim Laden der Pokémon-Details');
     }
