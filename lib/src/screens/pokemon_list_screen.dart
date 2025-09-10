@@ -35,7 +35,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
   Future<void> fetchPokemons() async {
     // Die Daten von der Pokemon API abrufen
     final response = await http.get(
-      Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0'),
+      Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0'),
     );
 
     // Überprüfen, ob die Anfrage erfolgreich war
@@ -311,6 +311,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                         ],
                       ),
                     )
+                  // Grid Ansicht für die Pokemon-Karten
                   : GridView.builder(
                       padding: const EdgeInsets.all(12),
                       gridDelegate:
