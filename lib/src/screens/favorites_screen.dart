@@ -145,9 +145,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () {
-              // Switch to Pokemon list tab (index 0)
-              // You might need to pass a callback from parent to handle this
-              DefaultTabController.of(context)?.animateTo(0);
+              DefaultTabController.of(context).animateTo(0);
             },
             icon: const Icon(Icons.search),
             label: const Text('Pokémon entdecken'),
