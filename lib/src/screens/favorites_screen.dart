@@ -12,6 +12,7 @@ class FavoritesScreen extends StatefulWidget {
 class _FavoritesScreenState extends State<FavoritesScreen> {
   List<Map<String, dynamic>> favorites = [];
   bool isLoading = true;
+  //Favorite Service aufrufen und initialisieren
   late FavoriteService _favoriteService;
 
   @override
@@ -25,6 +26,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     await _loadFavorites();
   }
 
+  // Vorhandene Favoriten laden
   Future<void> _loadFavorites() async {
     final favoriteList = await _favoriteService.getFavorites();
     setState(() {
@@ -33,6 +35,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
   }
 
+  // Favoriten hinzufügen oder entfernen
   Future<void> _removeFavorite(int pokemonId) async {
     await _favoriteService.removeFavorite(pokemonId);
     await _loadFavorites(); // Neu laden
@@ -141,6 +144,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         ],
                       ),
                     )
+                  //Daten für die einzelnen Favoriten anzeigen
                   : GridView.builder(
                       padding: const EdgeInsets.all(12),
                       gridDelegate:

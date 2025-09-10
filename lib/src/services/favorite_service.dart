@@ -4,6 +4,7 @@ import 'dart:convert';
 class FavoriteService {
   static const String _favoritesKey = 'favorite_pokemons';
   static FavoriteService? _instance;
+  // Verwendung von Shared Preferences für die Speicherung der Favoriten
   static SharedPreferences? _prefs;
 
   FavoriteService._();
