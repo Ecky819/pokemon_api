@@ -12,12 +12,24 @@ class PokemonListScreen extends StatefulWidget {
 
 class _PokemonListScreenState extends State<PokemonListScreen> {
   List<dynamic> pokemons = [];
+  List<dynamic> filteredPokemons = [];
   bool isLoading = true;
+  final TextEditingController _searchController = TextEditingController();
+  bool isSearching = false;
 
   @override
   void initState() {
     super.initState();
     fetchPokemons();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  // Suchfunktionen für den Suchcontroller
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchPokemons() async {
@@ -31,12 +43,46 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
       final data = json.decode(response.body);
       setState(() {
         pokemons = data['results'];
+        filteredPokemons = pokemons; // Anfangs alle Pokemon anzeigen
         isLoading = false;
       });
     } else {
       // Wenn die Anfrage nicht erfolgreich war, eine Fehlermeldung ausgeben
       throw Exception('Fehler beim Laden der Pokémon-Daten');
     }
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase().trim();
+
+    setState(() {
+      if (query.isEmpty) {
+        filteredPokemons = pokemons;
+      } else {
+        filteredPokemons = pokemons.where((pokemon) {
+          final pokemonName = pokemon['name'].toString().toLowerCase();
+          return pokemonName.contains(query);
+        }).toList();
+      }
+    });
+  }
+
+  //Suchlogik
+  void _toggleSearch() {
+    setState(() {
+      isSearching = !isSearching;
+      if (!isSearching) {
+        _searchController.clear();
+        filteredPokemons = pokemons;
+      }
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {
+      filteredPokemons = pokemons;
+    });
   }
 
   @override
@@ -58,45 +104,157 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                   ),
                 ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [Colors.red, Colors.redAccent, Colors.black],
-                          stops: [0.3, 0.6, 1.0],
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 10,
-                          height: 10,
-                          decoration: const BoxDecoration(
+              child: Column(
+                children: [
+                  // Header Row
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (!isSearching) ...[
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  Colors.red,
+                                  Colors.redAccent,
+                                  Colors.black,
+                                ],
+                                stops: [0.3, 0.6, 1.0],
+                              ),
+                            ),
+                            child: Center(
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          const Expanded(
+                            child: Text(
+                              'Pokédex',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+                          // Suchfeld
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Pokemon suchen...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontSize: 16,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.grey[400],
+                                    size: 20,
+                                  ),
+                                  suffixIcon: _searchController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: Icon(
+                                            Icons.clear,
+                                            color: Colors.grey[400],
+                                            size: 20,
+                                          ),
+                                          onPressed: _clearSearch,
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                        )
+                                      : null,
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        // Such-Button
+                        IconButton(
+                          onPressed: _toggleSearch,
+                          icon: Icon(
+                            isSearching ? Icons.close : Icons.search,
                             color: Colors.white,
-                            shape: BoxShape.circle,
+                            size: 28,
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+
+                  // Such-Statistiken
+                  if (isSearching && _searchController.text.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 12,
+                        left: 16,
+                        right: 16,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${filteredPokemons.length} Ergebnis${filteredPokemons.length != 1 ? 'se' : ''} gefunden',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Pokédex',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
+
             // Body Content
             Expanded(
               child: isLoading
@@ -123,6 +281,36 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                         ],
                       ),
                     )
+                  : filteredPokemons.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 80,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Keine Pokémon gefunden',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Versuche einen anderen Suchbegriff',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   : GridView.builder(
                       padding: const EdgeInsets.all(12),
                       gridDelegate:
@@ -132,10 +320,12 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                             mainAxisSpacing: 12,
                             childAspectRatio: 0.85,
                           ),
-                      itemCount: pokemons.length,
+                      itemCount: filteredPokemons.length,
                       itemBuilder: (context, index) {
-                        final pokemon = pokemons[index];
-                        final pokemonId = index + 1;
+                        final pokemon = filteredPokemons[index];
+                        // Berechne die ursprüngliche Pokemon-ID basierend auf der Position in der ursprünglichen Liste
+                        final originalIndex = pokemons.indexOf(pokemon);
+                        final pokemonId = originalIndex + 1;
                         final imageUrl =
                             'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$pokemonId.png';
 
